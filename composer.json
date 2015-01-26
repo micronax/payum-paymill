@@ -24,6 +24,7 @@
     "replace": {
     },
     "suggest": {
+        "kriswallsmith/buzz": "~0.13"
     },
     "autoload": {
         "psr-0": { "Wiseape": "src/" }

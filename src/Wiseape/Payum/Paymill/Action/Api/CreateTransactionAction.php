@@ -8,26 +8,32 @@
 
 namespace Wiseape\Payum\Paymill\Action\Api;
 
+use Buzz\Client\ClientInterface;
 use Payum\Core\Action\ActionInterface;
-use Payum\Core\Request\GetHumanStatus;
 use Payum\Core\ApiAwareInterface;
 use Payum\Core\Exception\LogicException;
 use Payum\Core\Exception\RequestNotSupportedException;
 use Payum\Core\Exception\UnsupportedApiException;
-use Payum\Core\Action\PaymentAwareAction;
+use Paymill\API\Curl;
 use Paymill\Request;
 use Paymill\Services\PaymillException;
 use Paymill\Models\Request\Transaction as TransactionRequest;
+use Wiseape\Paymill\API\Buzz;
 use Wiseape\Payum\Paymill\Keys;
 use Wiseape\Payum\Paymill\Request\Api\CreateTransaction;
 
 class CreateTransactionAction implements ActionInterface, ApiAwareInterface {
-
+    
     /**
      * @var Keys
      */
     protected $keys;
-
+    
+    /**
+     * @var ClientInterface
+     */
+    protected $client;
+    
     /**
      * {@inheritDoc}
      */
@@ -37,6 +43,13 @@ class CreateTransactionAction implements ActionInterface, ApiAwareInterface {
         }
 
         $this->keys = $api;
+    }
+    
+    /**
+     * @param ClientInterface $client
+     */
+    public function setClient(ClientInterface $client = null) {
+        $this->client = $client;
     }
 
     /**
@@ -62,7 +75,14 @@ class CreateTransactionAction implements ActionInterface, ApiAwareInterface {
             $paymillTxn->setCurrency($details['currency']);
             $paymillTxn->setDescription($details['description']);
 
-            $paymillRequest = new Request($this->keys->getSecretKey());
+            $paymillRequest = new Request();
+            if($this->client) {
+                $connection = new Buzz($this->keys->getSecretKey(), $this->client);
+            } else {
+                $connection = new Curl($this->keys->getSecretKey());
+            }
+            $paymillRequest->setConnectionClass($connection);
+            
             $paymillRequest->create($paymillTxn);
 
             $details['http_status_code'] = 200;
@@ -77,7 +97,7 @@ class CreateTransactionAction implements ActionInterface, ApiAwareInterface {
 
         $request->setModel($details);
     }
-
+    
     /**
      * {@inheritDoc}
      */

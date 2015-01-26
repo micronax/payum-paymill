@@ -8,7 +8,7 @@
 
 namespace Wiseape\Payum\Paymill;
 
-use Payum\Core\Action\ActionInterface;
+use Buzz\Client\ClientInterface;
 use Payum\Core\Action\CaptureOrderAction;
 use Payum\Core\Action\ExecuteSameRequestWithModelDetailsAction;
 use Payum\Core\Action\GetHttpRequestAction;
@@ -24,13 +24,11 @@ abstract class PaymentFactory {
 
     /**
      * @param Keys $keys
-     * @param ActionInterface $renderTemplateAction
-     * @param string $layoutTemplate
-     * @param string $obtainTokenTemplate
+     * @param ClientInterface $client
      *
      * @return PaymentInterface
      */
-    public static function create(Keys $keys) {
+    public static function create(Keys $keys, ClientInterface $client = null) {
 
         $payment = new Payment;
 
@@ -43,7 +41,11 @@ abstract class PaymentFactory {
         $payment->addAction(new FillOrderDetailsAction);
         $payment->addAction(new StatusAction);
         $payment->addAction(new GetHttpRequestAction);
-        $payment->addAction(new CreateTransactionAction);
+
+        $action = new CreateTransactionAction;
+        $action->setClient($client);
+        $payment->addAction($action);
+
         $payment->addAction(new ExecuteSameRequestWithModelDetailsAction);
 
         return $payment;
