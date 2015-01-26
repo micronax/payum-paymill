@@ -1,0 +1,31 @@
+{
+    "name": "wiseape/payum-paymill",
+    "type": "library",
+    "description": "paymill implementation for payum pamyent framework",
+    "keywords": [
+        "payment",
+        "paymill"
+    ],
+    "homepage": "https://www.wiseape.de",
+    "license": "LGPL-3.0+",
+    "authors": [
+        {
+            "name": "Ruben Rögels",
+            "email": "ruben.roegels@wiseape.de"
+        }
+    ],
+    "require": {
+        "php": ">=5.3",
+        "payum/core": "~0.12.0",
+        "paymill/paymill": "3.2.1"
+    },
+    "require-dev": {
+    },
+    "replace": {
+    },
+    "suggest": {
+    },
+    "autoload": {
+        "psr-0": { "Wiseape": "src/" }
+    }
+}
