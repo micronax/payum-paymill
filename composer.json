@@ -16,7 +16,7 @@
     ],
     "require": {
         "php": ">=5.3",
-        "payum/core": "~0.12.0",
+        "payum/core": "0.*",
         "paymill/paymill": "3.2.1"
     },
     "require-dev": {
